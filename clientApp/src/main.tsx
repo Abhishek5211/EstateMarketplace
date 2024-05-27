@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import Home from "./pages/Home.tsx";
 import About from "./pages/About.tsx";
+import SignUp from "./pages/SignUp.tsx";
 
 // const router = createBrowserRouter([{
 //   path: "/",
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<App />}>
       <Route path="" element={<Home />} />
       <Route path="about" element={<About />} />
+      <Route path="signup" element={<SignUp />} />
     </Route>
   )
 );

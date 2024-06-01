@@ -3,6 +3,7 @@ import SignIn from "./SignIn";
 import { useState } from "react";
 
 import { CustomError } from "../types/types";
+import OAuth from "../components/OAuth/oauth";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -73,6 +74,7 @@ export default function SignUp() {
         >
           {loading ? "Loading..." : "Sign Up"}
         </button>
+        <OAuth/>
       </form>
       <div className="flex gap-3 mt-3">
         <p>Have an account?</p>

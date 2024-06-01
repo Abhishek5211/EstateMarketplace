@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSlice.ts';
 
 import { RootState } from "../redux/store.ts";
+import OAuth from "../components/OAuth/oauth.tsx";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -68,6 +69,7 @@ export default function SignIn() {
         >
           { loading ? "Loading..." : "Sign In"}
         </button>
+      <OAuth/>
       </form>
       <div className="flex gap-3 mt-3">
         <p>Don't have an account?</p>
@@ -76,6 +78,7 @@ export default function SignIn() {
         </Link>
         {error && <p className="text-red-500 mt-5">{error}</p>}
       </div>
+      
     </div>
   );
 }

@@ -1,18 +1,18 @@
 import { getAuth, signInWithPopup } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth/web-extension";
-import app from "../../utils/firebase";
 import { useDispatch } from "react-redux";
 import { signInSuccess } from "../../redux/user/userSlice";
+import { app } from "../../utils/firebase";
 
 export default function OAuth() {
   const dispatch = useDispatch();
   const handleGoogleAuth = async () => {
     try {
       // Initialize Firebase (assuming 'app' is correctly set up)
-      
+
       const auth = getAuth(app);
       const provider = new GoogleAuthProvider();
-  
+
       // Sign in with Google
       const result = await signInWithPopup(auth, provider);
 
@@ -28,7 +28,7 @@ export default function OAuth() {
           photo: result.user.photoURL,
         }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         dispatch(signInSuccess(data));
@@ -39,7 +39,7 @@ export default function OAuth() {
       console.error("Error during authentication:", err);
     }
   };
-  
+
   return (
     <button
       onClick={handleGoogleAuth}

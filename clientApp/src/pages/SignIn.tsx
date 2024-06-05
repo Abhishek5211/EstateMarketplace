@@ -5,10 +5,14 @@ import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSli
 
 import { RootState } from "../redux/store.ts";
 import OAuth from "../components/OAuth/oauth.tsx";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Bounce, toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const {loading, error} = useSelector((state:RootState )=> state.user);
+  const {user} = useSelector((state:RootState )=> state.user);
+  const {currentUser,loading}=user;
   const dispatch = useDispatch();
  
   const navigate = useNavigate();
@@ -32,19 +36,66 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
+      console.log(data);
       if (data.success === false) {
-        console.dir(data);
         dispatch(signInFailure(data.message));
+        toast.error(data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+          });
+
       } else {
         dispatch(signInSuccess(data));
-        navigate("/signin");
+        //navigate("/signin");
+        toast.success(data.username + ' Welcome!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+          });
       }
     } catch (error) {
       dispatch(signInFailure(error));
+      dispatch(signInFailure(error));
+        toast.error('Horrible Error', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+          });
     }
   };
   return (
     <div className="mx-auto max-w-lg p-3">
+         <ToastContainer
+position="top-right"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="light"
+/>
       <h1 className="font-semibold text-2xl text-center my-6 ">Sign In</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <input
@@ -53,7 +104,7 @@ export default function SignIn() {
           className="border p-3 rounded-lg"
           name="email"
           onChange={handleChange}
-        ></input>
+        />
 
         <input
           type="password"
@@ -61,7 +112,7 @@ export default function SignIn() {
           className="border p-3 rounded-lg"
           name="password"
           onChange={handleChange}
-        ></input>
+        />
 
         <button
           type="submit"
@@ -76,7 +127,6 @@ export default function SignIn() {
         <Link to="/signup" className="text-blue-700">
           Sign Up
         </Link>
-        {error && <p className="text-red-500 mt-5">{error}</p>}
       </div>
       
     </div>

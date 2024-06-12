@@ -69,7 +69,7 @@ export default function SignIn() {
     } catch (error) {
       dispatch(signInFailure(error));
       dispatch(signInFailure(error));
-        toast.error('Horrible Error', {
+        toast.error('Sign In Error', {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,

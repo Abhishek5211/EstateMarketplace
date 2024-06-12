@@ -16,7 +16,7 @@ mongoose
     console.log(e);
   });
 app.listen(3000, () => console.log("3000 port is open"));
-app.use("/", userRouter);
+app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 
 app.use((err, req, res, next) => {

@@ -1,23 +1,24 @@
-
 import { FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
-  const {user} = useSelector((state:RootState )=> state.user);
-  const {currentUser}=user;
+  const navigate = useNavigate();
+  const { user } = useSelector((state: RootState) => state.user);
+  const { currentUser } = user;
   return (
     <header className="shadow sticky z-50 top-0">
       <nav className="bg-slate-300 border-gray-200 px-4 lg:px-6 py-2.5 flex justify-even items-center">
-          <div>
-            <Link to="/" className="flex items-center px-4 lg:px-6">
-              <h1 className="font-bold text-sm sm:text-2xl flex flex-wrap">
-                <span className="text-slate-500">Rajesh</span>
-                <span className="text-slate-700">Estate</span>
-              </h1>
-            </Link>
-          </div>
+        <div>
+          <Link to="/" className="flex items-center px-4 lg:px-6">
+            <h1 className="font-bold text-sm sm:text-2xl flex flex-wrap">
+              <span className="text-slate-500">Rajesh</span>
+              <span className="text-slate-700">Estate</span>
+            </h1>
+          </Link>
+        </div>
         <div className="flex flex-wrap items-center justify-between mx-auto max-w-screen-xl">
           <div className="flex flex-wrap gap-8">
             <form className="bg-slate-100 rounded-lg flex items-center p-3">
@@ -39,16 +40,30 @@ export default function Header() {
                   About
                 </li>
               </Link>
-              <Link to={"/signin"}>
-                { currentUser ? <img src={currentUser.avatar} className="w-7 h-7 rounded-full object-cover" alt = 'profile'/> :
-                <li className="hidden sm:inline text-slate-700 hover:font-bold">
-                  Sign In
-                </li>}
-              </Link>
+              {currentUser ? (
+                <Link to={"/profile"}>
+                  <li>
+                    <img
+                      src={currentUser.avatar}
+                      className="w-7 h-7 rounded-full object-cover"
+                      alt="profile"
+                      onClick={() => navigate("/profile")}
+                    />
+                  </li>
+                </Link>
+              ) : (
+                <Link to={"/signin"}>
+                  <li className="hidden sm:inline text-slate-700 hover:font-bold">
+                    Sign In
+                  </li>
+                </Link>
+              )}
               <Link to={"/signup"}>
-                {!currentUser && <li className="hidden sm:inline text-slate-700 hover:font-bold">
-                  Sign Up
-                </li>}
+                {!currentUser && (
+                  <li className="hidden sm:inline text-slate-700 hover:font-bold">
+                    Sign Up
+                  </li>
+                )}
               </Link>
             </ul>
           </div>

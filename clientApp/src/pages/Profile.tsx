@@ -16,11 +16,12 @@ import { app } from "../utils/firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 export default function Profile() {
   const { user } = useSelector((state: RootState) => state.user);
   const { currentUser, loading, error } = user;
   const fileRef = useRef(null);
-  const [file, setFile] = useState(undefined);
+  const [file, setFile] = useState<File|undefined>(undefined);
   const [uploadPercentage, setUploadPercentage] = useState(0);
   const [uploadError, setUploadError] = useState(false);
   const [formData, setFormData] = useState({});
@@ -80,29 +81,34 @@ export default function Profile() {
     );
   };
 
-  async function handleSubmit(e) {
+   function handleChange(e:React.ChangeEvent<HTMLInputElement>)
+  {
+    setFormData({...formData,
+      [e.target.name]: e.target.value,
+    });
+  }
+  async function handleSubmit(e:React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-
-      const res = await fetch(`/api/user/update/${currentUser.id}`, {
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "Application/json",
         },
         body: JSON.stringify(formData),
       });
-      console.log(formData);
+      
       const data = await res.json();
-
       if (data.success === false) {
         dispatch(updateUserFailure(data.message));
         return;
       }
       dispatch(updateUserSuccess(data));
     } catch (error) {
-      dispatch(updateUserFailure(error.message));
+      dispatch(updateUserFailure("error.message"));
     }
+
   }
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -123,7 +129,7 @@ export default function Profile() {
           ref={fileRef}
           hidden
           accept="image/*"
-          onChange={(e) => setFile(e.target.files[0])}
+          onChange={(e:React.ChangeEvent<HTMLInputElement>) => setFile(e.target.files![0])}
         ></input>
         <img
           src={formData.avatar || currentUser.avatar}
@@ -136,18 +142,21 @@ export default function Profile() {
           placeholder="Username"
           className="border p-3 rounded-lg"
           name="username"
+          onChange={handleChange}
         ></input>
         <input
           type="email"
           placeholder="Email"
           className="border p-3 rounded-lg"
           name="email"
+          onChange={handleChange}
         ></input>
         <input
           type="password"
           placeholder="Password"
           className="border p-3 rounded-lg"
           name="password"
+          onChange={handleChange}
         ></input>
         <button
           type="submit"

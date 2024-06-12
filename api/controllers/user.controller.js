@@ -5,12 +5,11 @@ import errorHandler from "../utils/error.js";
 export default async function updateUser(req, res, next) {
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, "You can only update your own account!"));
-
+   console.log(req.body);
   try {
     if (req.body.password) {
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
-
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -25,6 +24,8 @@ export default async function updateUser(req, res, next) {
     );
 
     const { password, ...rest } = updatedUser._doc;
+    return res.status(201).json({...rest});
+  
   } catch (error) {
     next(error);
   }

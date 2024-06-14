@@ -15,6 +15,16 @@ export async function signup(req, res, next) {
   }
 }
 
+export async function signout(req, res, next) {
+  try {
+  res.clearCookie('access_token');
+ return  res.status(200).json("User created sucessfully");
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });

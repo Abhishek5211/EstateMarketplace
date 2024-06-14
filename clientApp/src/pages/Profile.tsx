@@ -8,6 +8,9 @@ import {
   deleteUserStart,
   deleteUserFailure,
   deleteUserSuccess,
+  signOutSuccess,
+  signOutFailure,
+  signOutStart,
 } from "../redux/user/userSlice.ts";
 import {
   getDownloadURL,
@@ -19,12 +22,11 @@ import { app } from "../utils/firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 export default function Profile() {
   const { user } = useSelector((state: RootState) => state.user);
   const { currentUser, loading, error } = user;
   const fileRef = useRef(null);
-  const [file, setFile] = useState<File|undefined>(undefined);
+  const [file, setFile] = useState<File | undefined>(undefined);
   const [uploadPercentage, setUploadPercentage] = useState(0);
   const [uploadError, setUploadError] = useState(false);
   const [formData, setFormData] = useState({});
@@ -35,31 +37,39 @@ export default function Profile() {
       handleFileUpload(file);
     }
   }, [file]);
-  
-  const handleDeleteAccount = async() => {
-    try{
+
+  const handleDeleteAccount = async () => {
+    try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`,
-        {
-         method:'DELETE'
-        }
-      );
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
 
       const data = await res.json();
-      if(data.success == false)
-        {
-          dispatch(deleteUserFailure(data.message));
-          return;
-        }
-        dispatch(deleteUserSuccess(data));
-
-    }
-
-    catch(error){
+      if (data.success == false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
+  };
 
-  }
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutStart());
+      const res = await fetch("/api/user/signout/");
+      const data = res.json();
+      if (data.success === false) {
+        dispatch(signOutFailure(data.message));
+        return;
+      }
+      dispatch(signOutSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
   const handleFileUpload = (file) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
@@ -108,13 +118,10 @@ export default function Profile() {
     );
   };
 
-   function handleChange(e:React.ChangeEvent<HTMLInputElement>)
-  {
-    setFormData({...formData,
-      [e.target.name]: e.target.value,
-    });
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   }
-  async function handleSubmit(e:React.ChangeEvent<HTMLInputElement>) {
+  async function handleSubmit(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
@@ -125,7 +132,7 @@ export default function Profile() {
         },
         body: JSON.stringify(formData),
       });
-      
+
       const data = await res.json();
       if (data.success === false) {
         dispatch(updateUserFailure(data.message));
@@ -135,7 +142,6 @@ export default function Profile() {
     } catch (error) {
       dispatch(updateUserFailure("error.message"));
     }
-
   }
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -156,7 +162,9 @@ export default function Profile() {
           ref={fileRef}
           hidden
           accept="image/*"
-          onChange={(e:React.ChangeEvent<HTMLInputElement>) => setFile(e.target.files![0])}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFile(e.target.files![0])
+          }
         ></input>
         <img
           src={formData.avatar || currentUser.avatar}
@@ -210,8 +218,15 @@ export default function Profile() {
       </form>
 
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer" onClick={handleDeleteAccount}>Delete Account</span>
-        <span className="text-red-700 cursor-pointer">Sign Out</span>
+        <span
+          className="text-red-700 cursor-pointer"
+          onClick={handleDeleteAccount}
+        >
+          Delete Account
+        </span>
+        <span className="text-red-700 cursor-pointer" onClick={handleSignOut}>
+          Sign Out
+        </span>
       </div>
     </div>
   );

@@ -21,6 +21,7 @@ import {
 import { app } from "../utils/firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Link } from "react-router-dom";
 
 export default function Profile() {
   const { user } = useSelector((state: RootState) => state.user);
@@ -201,6 +202,12 @@ export default function Profile() {
         >
           {loading ? "Loading" : "Update"}
         </button>
+        <Link
+          to={"/create-listing"}
+          className="rounded-lg bg-green-700 uppercase text-center hover:opacity-95 text-white"
+        >
+          Create Listing
+        </Link>
         <p hidden>
           {error
             ? toast.error("Update Error " + error, {

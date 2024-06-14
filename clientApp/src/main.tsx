@@ -17,6 +17,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from "redux-persist/integration/react";
 import Profile from "./pages/Profile.tsx";
 import PrivateRoute from "./components/PrivateRoute/privateroute.tsx";
+import CreateListing from "./pages/CreateListing.tsx";
 
 // const router = createBrowserRouter([{
 //   path: "/",
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route path="signin" element={<SignIn />} />
       <Route element={<PrivateRoute/>}>
       <Route path="profile" element={<Profile />} />
+      <Route path="create-listing" element={<CreateListing />} />
       </Route>
     </Route>
   )

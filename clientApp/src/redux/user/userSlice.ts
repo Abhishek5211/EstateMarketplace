@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
- 
+
 const initialState = {
   currentUser: null,
   error: null,
@@ -13,7 +13,7 @@ export const userSlice = createSlice({
     signInStart: (state) => {
       state.loading = true;
     },
-    signInSuccess: (state, action ) => {
+    signInSuccess: (state, action) => {
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
@@ -22,7 +22,7 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    updateUserStart:(state) => {
+    updateUserStart: (state) => {
       state.loading = true;
     },
     updateUserSuccess: (state, action) => {
@@ -34,11 +34,34 @@ export const userSlice = createSlice({
     updateUserFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
-    }
+    },
+    deleteUserStart: (state) => {
+      state.loading = true;
+    },
+    deleteUserSuccess: (state) => {
+      state.currentUser = null;
+      state.loading = false;
+      state.error = null;
+    },
+
+    deleteUserFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { signInStart, signInFailure, signInSuccess, updateUserFailure,updateUserStart,updateUserSuccess } = userSlice.actions;
+export const {
+  signInStart,
+  signInFailure,
+  signInSuccess,
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+} = userSlice.actions;
 
 export default userSlice.reducer;

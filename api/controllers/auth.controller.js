@@ -26,7 +26,7 @@ export const google = async (req, res, next) => {
           httpOnly: true,
           expires: new Date(Date.now() + 24 * 60 * 60),
         })
-        .status(200)
+        .status(200) 
         .json(rest);
     } else {
       const generatedPassword = Math.random().toString(36).slice(-16);

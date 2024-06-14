@@ -2,10 +2,9 @@ import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import errorHandler from "../utils/error.js";
 
-export default async function updateUser(req, res, next) {
+export async function updateUser(req, res, next) {
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, "You can only update your own account!"));
-   console.log(req.body);
   try {
     if (req.body.password) {
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
@@ -24,8 +23,21 @@ export default async function updateUser(req, res, next) {
     );
 
     const { password, ...rest } = updatedUser._doc;
-    return res.status(201).json({...rest});
+    return res.status(201).json({ ...rest });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export  async function deleteUser(req, res, next) {
+  if (req.user.id !== req.params.id)
+    return next(errorHandler(401, "You can only delete your own account!"));
+  try {
   
+ 
+     await User.findByIdAndDelete(req.params.id);
+     res.clearCookie('access_token');
+    return res.status(200).json('User has been deleted!');
   } catch (error) {
     next(error);
   }

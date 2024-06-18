@@ -1,7 +1,8 @@
 import User from "../models/user.model.js";
-import bcryptjs  from "bcryptjs";
+import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import errorHandler from "../utils/error.js";
+import Listing from "../models/listing.model.js";
 
 export async function signup(req, res, next) {
   const { username, email, password } = req.body;
@@ -17,13 +18,12 @@ export async function signup(req, res, next) {
 
 export async function signout(req, res, next) {
   try {
-  res.clearCookie('access_token');
- return  res.status(200).json("User created sucessfully");
+    res.clearCookie("access_token");
+    return res.status(200).json("User created sucessfully");
   } catch (error) {
     next(error);
   }
 }
-
 
 export const google = async (req, res, next) => {
   try {
@@ -36,7 +36,7 @@ export const google = async (req, res, next) => {
           httpOnly: true,
           expires: new Date(Date.now() + 24 * 60 * 60),
         })
-        .status(200) 
+        .status(200)
         .json(rest);
     } else {
       const generatedPassword = Math.random().toString(36).slice(-16);
@@ -91,3 +91,4 @@ export async function signin(req, res, next) {
     next(error);
   }
 }
+

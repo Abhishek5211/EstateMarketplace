@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   updateUserFailure,
   updateUserSuccess,
@@ -29,7 +29,7 @@ export default function Profile() {
   const fileRef = useRef(null);
   const [file, setFile] = useState<File | undefined>(undefined);
   const [uploadPercentage, setUploadPercentage] = useState(0);
-  const [uploadError, setUploadError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
 
@@ -99,7 +99,6 @@ export default function Profile() {
           progress: undefined,
           theme: "light",
         });
-        setUploadError(true);
       },
       () => {
         toast.success("Upload Success!", {
@@ -122,6 +121,35 @@ export default function Profile() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
+
+  async function handleShowListings( e: React.ChangeEvent<HTMLInputElement>) {
+    try {
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = res.json();
+      console.log(data);
+
+      if (data.success === false) {
+        toast.error("Upload Error:" + data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      setUserListings(data);
+    } catch (error) {
+      toast.error("Upload Error:" + error.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }
+
   async function handleSubmit(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     try {
@@ -204,7 +232,7 @@ export default function Profile() {
         </button>
         <Link
           to={"/create-listing"}
-          className="rounded-lg bg-green-700 uppercase text-center hover:opacity-95 text-white"
+          className="rounded-lg bg-green-700 uppercase text-center hover:opacity-95 text-white p-3 "
         >
           Create Listing
         </Link>
@@ -224,7 +252,7 @@ export default function Profile() {
         </p>
       </form>
 
-      <div className="flex justify-between mt-5">
+      <div className="flex justify-between p-5">
         <span
           className="text-red-700 cursor-pointer"
           onClick={handleDeleteAccount}
@@ -235,6 +263,43 @@ export default function Profile() {
           Sign Out
         </span>
       </div>
+      <button className="text-green-700 w-full" onClick={handleShowListings}>
+        Show User Listings
+      </button>
+      {userListings && userListings.length > 0 && (
+        <div>
+          <h2 className="mt-7 font-bold">Your Listings</h2>
+          {userListings.map((listing) => {
+            return (
+              <div
+                key={listing._id}
+                className="rounded-lg border p-3 flex space-between items-center gap-4"
+              >
+                <Link to={`./listings/${listing._id}`}>
+                  <img
+                    src={listing.imageUrls[0]}
+                    alt="Listing Cover"
+                    className="h-20 w-20 object-contain"
+                  ></img>
+                </Link>
+                <Link to={`./listings/${listing._id}`}>
+                  <p className=" font-semibold hover:font-bold truncae">
+                    {listing.name}
+                  </p>
+                </Link>
+                <div className="flex gap-1">
+                  <button className="text-green-700 uppercase rounded-lg">
+                    Edit
+                  </button>
+                  <button className="text-red-700 uppercase rounded-lg">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

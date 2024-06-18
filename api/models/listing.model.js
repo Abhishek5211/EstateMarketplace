@@ -6,7 +6,6 @@ const listingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
     address: {
       type: String,
       required: true,
@@ -15,11 +14,15 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    discountPrice: {
+    discountedPrice: {
       type: Number,
       required: true,
     },
-    bedroom: {
+    bedrooms: {
+      type: Number,
+      required: true,
+    },
+    bathrooms: {
       type: Number,
       required: true,
     },

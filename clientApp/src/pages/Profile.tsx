@@ -122,14 +122,13 @@ export default function Profile() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-  async function handleShowListings( e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleShowListings() {
     try {
       const res = await fetch(`/api/user/listings/${currentUser._id}`);
       const data = res.json();
       console.log(data);
-
-      if (data.success === false) {
-        toast.error("Upload Error:" + data.message, {
+      if (data.ok === false) {
+        toast.error("Error:" + data.message, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -139,6 +138,7 @@ export default function Profile() {
         return;
       }
       setUserListings(data);
+
     } catch (error) {
       toast.error("Upload Error:" + error.message, {
         position: "top-right",

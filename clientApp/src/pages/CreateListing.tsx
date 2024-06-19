@@ -416,6 +416,7 @@ function CreateListing() {
             ))}
           <button
             disabled={loading || uploading}
+            onClick={handleSubmit}
             className="p-3 mt-4 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
             {loading ? "Creating... " : "Create Listing"}

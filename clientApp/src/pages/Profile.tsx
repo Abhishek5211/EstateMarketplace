@@ -125,7 +125,7 @@ export default function Profile() {
   async function handleShowListings() {
     try {
       const res = await fetch(`/api/user/listings/${currentUser._id}`);
-      const data = res.json();
+      const data = await res.json();
       console.log(data);
       if (data.ok === false) {
         toast.error("Error:" + data.message, {
@@ -138,7 +138,6 @@ export default function Profile() {
         return;
       }
       setUserListings(data);
-
     } catch (error) {
       toast.error("Upload Error:" + error.message, {
         position: "top-right",
@@ -170,6 +169,36 @@ export default function Profile() {
       dispatch(updateUserSuccess(data));
     } catch (error) {
       dispatch(updateUserFailure("error.message"));
+    }
+  }
+
+  async function handleListingDelete(listingId) {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        toast.error("Error Occured:" + error.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      setUserListings((prev) =>
+        prev.filter((listing) => listing._id != listingId)
+      );
+    } catch (error) {
+      toast.error("Error Occured:" + error.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   }
   return (
@@ -287,11 +316,17 @@ export default function Profile() {
                     {listing.name}
                   </p>
                 </Link>
-                <div className="flex gap-1">
-                  <button className="text-green-700 uppercase rounded-lg">
+                <div className="flex justify-between gap-1">
+                  <button
+                    onClick={() => handleListingEdit(listing._id)}
+                    className="text-green-700 uppercase rounded-lg"
+                  >
                     Edit
                   </button>
-                  <button className="text-red-700 uppercase rounded-lg">
+                  <button
+                    className="text-red-700 uppercase rounded-lg"
+                    onClick={() => handleListingDelete(listing._id)}
+                  >
                     Delete
                   </button>
                 </div>
